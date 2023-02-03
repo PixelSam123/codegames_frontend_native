@@ -34,8 +34,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _serverUrl = TextEditingController();
-  late Future<UserPreview> _leaderboard;
-  late Future<ProblemPreview> _problems;
+  Future<List<UserPreview>>? _leaderboard;
+  Future<List<ProblemPreview>>? _problems;
 
   @override
   void dispose() {
@@ -52,7 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
         throw Exception('Network response not OK! ${res.statusCode}');
       }
 
-      return UserPreview.fromJson(jsonDecode(res.body));
+      return (jsonDecode(res.body) as List<Map<String, dynamic>>)
+          .map((element) => UserPreview.fromJson(element))
+          .toList();
     }();
 
     _problems = () async {
@@ -62,7 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
         throw Exception('Network response not OK! ${res.statusCode}');
       }
 
-      return ProblemPreview.fromJson(jsonDecode(res.body));
+      return (jsonDecode(res.body) as List<Map<String, dynamic>>)
+          .map((element) => ProblemPreview.fromJson(element))
+          .toList();
     }();
   }
 
@@ -89,12 +93,43 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 const SizedBox(width: 8.0),
-                ElevatedButton(
-                  onPressed: fetchLeaderboardAndProblems,
-                  child: const Text('Load'),
+                SizedBox(
+                  height: 43.0,
+                  child: ElevatedButton(
+                    onPressed: fetchLeaderboardAndProblems,
+                    child: const Text('Load'),
+                  ),
                 ),
               ],
             ),
+            _leaderboard == null
+                ? const Text('Leaderboard not loaded')
+                : FutureBuilder(
+                    future: _leaderboard,
+                    builder: (_, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(snapshot.data.toString());
+                      }
+                      if (snapshot.hasError) {
+                        return Text(snapshot.error.toString());
+                      }
+
+                      return const CircularProgressIndicator();
+                    }),
+            _problems == null
+                ? const Text('Problems not loaded')
+                : FutureBuilder(
+                    future: _problems,
+                    builder: (_, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(snapshot.data.toString());
+                      }
+                      if (snapshot.hasError) {
+                        return Text(snapshot.error.toString());
+                      }
+
+                      return const CircularProgressIndicator();
+                    }),
           ],
         ),
       ),
