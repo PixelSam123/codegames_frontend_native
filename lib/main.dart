@@ -20,19 +20,85 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepOrange,
         brightness: Brightness.dark,
       ),
-      home: const MyHomePage(),
+      home: const HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController _username = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+
+  @override
+  void dispose() {
+    _username.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sign Up'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Text(
+              'If you see this text it likely means the server '
+              'is still running with Basic auth over HTTP! '
+              'So please don\'t use your real credentials.',
+            ),
+            const SizedBox(height: 8.0),
+            TextField(
+              controller: _username,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                isDense: true,
+                labelText: 'Username',
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            TextField(
+              controller: _password,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                isDense: true,
+                labelText: 'Password',
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            SizedBox(
+              height: 43.0,
+              child: ElevatedButton(
+                onPressed: () {},
+                child: const Text('Submit'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   static const _normalPadding = 8.0;
 
   final TextEditingController _serverUrl = TextEditingController();
@@ -78,6 +144,15 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void goToSignUpPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const SignUpPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,8 +164,10 @@ class _MyHomePageState extends State<MyHomePage> {
               horizontal: 16.0,
               vertical: _normalPadding,
             ),
-            child:
-                ElevatedButton(onPressed: () {}, child: const Text('Sign Up')),
+            child: ElevatedButton(
+              onPressed: goToSignUpPage,
+              child: const Text('Sign Up'),
+            ),
           )
         ],
       ),
@@ -111,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8.0),
+                  const SizedBox(width: _normalPadding),
                   SizedBox(
                     height: 43.0,
                     child: ElevatedButton(
