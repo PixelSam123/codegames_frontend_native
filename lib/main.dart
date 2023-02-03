@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:codegames_frontend_native/types.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -28,6 +33,39 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final TextEditingController _serverUrl = TextEditingController();
+  late Future<UserPreview> _leaderboard;
+  late Future<ProblemPreview> _problems;
+
+  @override
+  void dispose() {
+    _serverUrl.dispose();
+    super.dispose();
+  }
+
+  void fetchLeaderboardAndProblems() {
+    _leaderboard = () async {
+      final res =
+          await http.get(Uri.parse('${_serverUrl.text}/problems/v1/problem'));
+
+      if (res.statusCode != HttpStatus.ok) {
+        throw Exception('Network response not OK! ${res.statusCode}');
+      }
+
+      return UserPreview.fromJson(jsonDecode(res.body));
+    }();
+
+    _problems = () async {
+      final res = await http.get(Uri.parse('${_serverUrl.text}/user/v1'));
+
+      if (res.statusCode != HttpStatus.ok) {
+        throw Exception('Network response not OK! ${res.statusCode}');
+      }
+
+      return ProblemPreview.fromJson(jsonDecode(res.body));
+    }();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,9 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: TextField(
-                    decoration: InputDecoration(
+                    controller: _serverUrl,
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       isDense: true,
                       labelText: 'Server URL',
@@ -51,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(width: 8.0),
                 ElevatedButton(
-                  onPressed: () => {},
+                  onPressed: fetchLeaderboardAndProblems,
                   child: const Text('Load'),
                 ),
               ],
