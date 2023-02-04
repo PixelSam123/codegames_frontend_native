@@ -31,3 +31,41 @@ class ProblemPreview {
     );
   }
 }
+
+class ProblemDetailedView extends ProblemPreview {
+  final String initialCode;
+
+  const ProblemDetailedView({
+    required String title,
+    required String description,
+    required this.initialCode,
+  }) : super(title: title, description: description);
+
+  factory ProblemDetailedView.fromJson(Map<String, dynamic> json) {
+    return ProblemDetailedView(
+      title: json['title'],
+      description: json['description'],
+      initialCode: json['initialCode'],
+    );
+  }
+}
+
+class Submission {
+  final String username;
+  final String content;
+  final String status;
+
+  const Submission({
+    required this.username,
+    required this.content,
+    required this.status,
+  });
+
+  factory Submission.fromJson(Map<String, dynamic> json) {
+    return Submission(
+      username: json['username'],
+      content: json['content'],
+      status: json['status'],
+    );
+  }
+}
