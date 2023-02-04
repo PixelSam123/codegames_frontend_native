@@ -232,6 +232,20 @@ class _ProblemPageState extends State<ProblemPage> {
                     const SizedBox(height: sizes.normalPadding),
                     MarkdownBody(data: snapshot.data!.description),
                     const SizedBox(height: sizes.normalPadding),
+                    const Text('Copy the initial code below:'),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(sizes.normalPadding),
+                        child: SelectableText(
+                          snapshot.data!.initialCode,
+                          style:
+                              Theme.of(context).textTheme.labelMedium!.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: sizes.normalPadding),
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 511.0),
                       child: Column(
