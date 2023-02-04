@@ -106,7 +106,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               const SizedBox(height: sizes.normalPadding),
               SizedBox(
-                height: 43.0,
+                height: sizes.largeButtonHeight,
                 child: ElevatedButton(
                   onPressed: attemptSignUp,
                   child: const Text('Submit'),
@@ -233,7 +233,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(width: sizes.normalPadding),
                   SizedBox(
-                    height: 43.0,
+                    height: sizes.largeButtonHeight,
                     child: ElevatedButton(
                       onPressed: fetchLeaderboardAndProblems,
                       child: const Text('Load'),
