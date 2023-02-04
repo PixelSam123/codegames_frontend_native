@@ -110,7 +110,9 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               const SizedBox(height: sizes.normalPadding),
               SizedBox(
-                height: sizes.largeButtonHeight,
+                height: sizes.largeButtonHeight(
+                  MediaQuery.of(context).textScaleFactor,
+                ),
                 child: ElevatedButton(
                   onPressed: attemptSignUp,
                   child: const Text('Submit'),
@@ -237,7 +239,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(width: sizes.normalPadding),
                   SizedBox(
-                    height: sizes.largeButtonHeight,
+                    height: sizes.largeButtonHeight(
+                      MediaQuery.of(context).textScaleFactor,
+                    ),
                     child: ElevatedButton(
                       onPressed: fetchLeaderboardAndProblems,
                       child: const Text('Load'),
