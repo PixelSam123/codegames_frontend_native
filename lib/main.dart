@@ -49,7 +49,20 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void attemptSignUp() {
     Future<String> fetchedSignUpResult = () async {
-      return "testres";
+      http.Response res = await http.post(
+        Uri.parse('${widget.serverUrl}/user/v1'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'name': _username.text,
+          'password': _password.text,
+        }),
+      );
+
+      if (res.statusCode != HttpStatus.created) {
+        throw Exception('Sign up error: ${res.body}');
+      }
+
+      return res.body;
     }();
 
     setState(() {
@@ -63,42 +76,60 @@ class _SignUpPageState extends State<SignUpPage> {
       appBar: AppBar(
         title: const Text('Sign Up'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(sizes.largePadding),
-        child: Column(
-          children: [
-            const Text(
-              'If you see this text it likely means the server '
-              'is still running with Basic auth over HTTP! '
-              'So please don\'t use your real credentials.',
-            ),
-            const SizedBox(height: sizes.normalPadding),
-            TextField(
-              controller: _username,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                isDense: true,
-                labelText: 'Username',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(sizes.largePadding),
+          child: Column(
+            children: [
+              const Text(
+                'If you see this text it likely means the server '
+                'is still running with Basic auth over HTTP! '
+                'So please don\'t use your real credentials.',
               ),
-            ),
-            const SizedBox(height: sizes.normalPadding),
-            TextField(
-              controller: _password,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                isDense: true,
-                labelText: 'Password',
+              const SizedBox(height: sizes.normalPadding),
+              TextField(
+                controller: _username,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                  labelText: 'Username',
+                ),
               ),
-            ),
-            const SizedBox(height: sizes.normalPadding),
-            SizedBox(
-              height: 43.0,
-              child: ElevatedButton(
-                onPressed: attemptSignUp,
-                child: const Text('Submit'),
+              const SizedBox(height: sizes.normalPadding),
+              TextField(
+                controller: _password,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                  labelText: 'Password',
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: sizes.normalPadding),
+              SizedBox(
+                height: 43.0,
+                child: ElevatedButton(
+                  onPressed: attemptSignUp,
+                  child: const Text('Submit'),
+                ),
+              ),
+              _signUpResult == null
+                  ? const Text('Waiting for sign up attempt')
+                  : FutureBuilder(
+                      future: _signUpResult,
+                      builder: (_, snapshot) {
+                        if (snapshot.hasData) {
+                          return const Text('Successfully signed up');
+                        }
+
+                        if (snapshot.hasError) {
+                          return Text(snapshot.error.toString());
+                        }
+
+                        return const CircularProgressIndicator();
+                      },
+                    ),
+            ],
+          ),
         ),
       ),
     );
@@ -234,6 +265,7 @@ class _HomePageState extends State<HomePage> {
                             ],
                           );
                         }
+
                         if (snapshot.hasError) {
                           return Text(snapshot.error.toString());
                         }
