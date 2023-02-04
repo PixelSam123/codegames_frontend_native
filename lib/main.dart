@@ -26,7 +26,9 @@ class MyApp extends StatelessWidget {
 }
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+  final String serverUrl;
+
+  const SignUpPage({super.key, required this.serverUrl});
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
@@ -35,12 +37,23 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  Future<String>? _signUpResult;
 
   @override
   void dispose() {
     _username.dispose();
     _password.dispose();
     super.dispose();
+  }
+
+  void attemptSignUp() {
+    Future<String> fetchedSignUpResult = () async {
+      return "testres";
+    }();
+
+    setState(() {
+      _signUpResult = fetchedSignUpResult;
+    });
   }
 
   @override
@@ -80,7 +93,7 @@ class _SignUpPageState extends State<SignUpPage> {
             SizedBox(
               height: 43.0,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: attemptSignUp,
                 child: const Text('Submit'),
               ),
             ),
@@ -148,7 +161,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const SignUpPage(),
+        builder: (_) => SignUpPage(serverUrl: _serverUrl.text),
       ),
     );
   }
