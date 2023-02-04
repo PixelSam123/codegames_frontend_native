@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:codegames_frontend_native/types.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:codegames_frontend_native/sizes.dart' as sizes;
+import 'package:codegames_frontend_native/types.dart';
 
 void main() {
   runApp(const MyApp());
@@ -63,7 +64,7 @@ class _SignUpPageState extends State<SignUpPage> {
         title: const Text('Sign Up'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(sizes.largePadding),
         child: Column(
           children: [
             const Text(
@@ -71,7 +72,7 @@ class _SignUpPageState extends State<SignUpPage> {
               'is still running with Basic auth over HTTP! '
               'So please don\'t use your real credentials.',
             ),
-            const SizedBox(height: 8.0),
+            const SizedBox(height: sizes.normalPadding),
             TextField(
               controller: _username,
               decoration: const InputDecoration(
@@ -80,7 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 labelText: 'Username',
               ),
             ),
-            const SizedBox(height: 8.0),
+            const SizedBox(height: sizes.normalPadding),
             TextField(
               controller: _password,
               decoration: const InputDecoration(
@@ -89,7 +90,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 labelText: 'Password',
               ),
             ),
-            const SizedBox(height: 8.0),
+            const SizedBox(height: sizes.normalPadding),
             SizedBox(
               height: 43.0,
               child: ElevatedButton(
@@ -112,8 +113,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static const _normalPadding = 8.0;
-
   final TextEditingController _serverUrl = TextEditingController();
   Future<List<UserPreview>>? _leaderboard;
   Future<List<ProblemPreview>>? _problems;
@@ -174,8 +173,8 @@ class _HomePageState extends State<HomePage> {
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: _normalPadding,
+              horizontal: sizes.largePadding,
+              vertical: sizes.normalPadding,
             ),
             child: ElevatedButton(
               onPressed: goToSignUpPage,
@@ -186,7 +185,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(sizes.largePadding),
           child: Column(
             children: [
               Row(
@@ -201,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: _normalPadding),
+                  const SizedBox(width: sizes.normalPadding),
                   SizedBox(
                     height: 43.0,
                     child: ElevatedButton(
@@ -252,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                                 .map((problemPreview) => Card(
                                       child: Padding(
                                         padding: const EdgeInsets.all(
-                                          _normalPadding,
+                                          sizes.normalPadding,
                                         ),
                                         child: Column(
                                           children: [
