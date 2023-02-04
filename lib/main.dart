@@ -83,58 +83,71 @@ class _SignUpPageState extends State<SignUpPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(sizes.largePadding),
-          child: Column(
-            children: [
-              const Text(
-                'If you see this text it likely means the server '
-                'is still running with Basic auth over HTTP! '
-                'So please don\'t use your real credentials.',
-              ),
-              const SizedBox(height: sizes.normalPadding),
-              TextField(
-                controller: _username,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  isDense: true,
-                  labelText: 'Username',
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              children: [
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 511.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        'If you see this text it likely means the server '
+                        'is still running with Basic auth over HTTP! '
+                        'So please don\'t use your real credentials.',
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: sizes.largePadding),
+                      TextField(
+                        controller: _username,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                          labelText: 'Username',
+                        ),
+                      ),
+                      const SizedBox(height: sizes.normalPadding),
+                      TextField(
+                        controller: _password,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                          labelText: 'Password',
+                        ),
+                      ),
+                      const SizedBox(height: sizes.normalPadding),
+                      SizedBox(
+                        height: sizes.largeButtonHeight(
+                          MediaQuery.of(context).textScaleFactor,
+                        ),
+                        child: ElevatedButton(
+                          onPressed: attemptSignUp,
+                          child: const Text('Submit'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: sizes.normalPadding),
-              TextField(
-                controller: _password,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  isDense: true,
-                  labelText: 'Password',
-                ),
-              ),
-              const SizedBox(height: sizes.normalPadding),
-              SizedBox(
-                height: sizes.largeButtonHeight(
-                  MediaQuery.of(context).textScaleFactor,
-                ),
-                child: ElevatedButton(
-                  onPressed: attemptSignUp,
-                  child: const Text('Submit'),
-                ),
-              ),
-              _signUpResult == null
-                  ? const Text('Waiting for sign up attempt')
-                  : FutureBuilder(
-                      future: _signUpResult,
-                      builder: (_, snapshot) {
-                        if (snapshot.hasData) {
-                          return const Text('Successfully signed up');
-                        }
+                const SizedBox(height: sizes.normalPadding),
+                _signUpResult == null
+                    ? const Text('Waiting for sign up attempt')
+                    : FutureBuilder(
+                        future: _signUpResult,
+                        builder: (_, snapshot) {
+                          if (snapshot.hasData) {
+                            return const Text('Successfully signed up');
+                          }
 
-                        if (snapshot.hasError) {
-                          return Text(snapshot.error.toString());
-                        }
+                          if (snapshot.hasError) {
+                            return Text(snapshot.error.toString());
+                          }
 
-                        return const CircularProgressIndicator();
-                      },
-                    ),
-            ],
+                          return const CircularProgressIndicator();
+                        },
+                      ),
+              ],
+            ),
           ),
         ),
       ),
