@@ -2,6 +2,15 @@
 
 Native frontend for codegames, my coding games server
 
+## Running the app
+
+You can grab the executable from the Releases tab, or clone this repository and run `flutter run`.
+
+## What is "Server URL" in the app? Where should I connect to?
+
+It should point to a running instance of my `codegames` server.  
+Head over to that repository to check out how to host it.
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
