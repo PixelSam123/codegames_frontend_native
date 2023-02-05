@@ -111,6 +111,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       const SizedBox(height: sizes.normalPadding),
                       TextField(
                         controller: _password,
+                        obscureText: true,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           isDense: true,
@@ -330,6 +331,7 @@ class _ProblemPageState extends State<ProblemPage> {
                           const SizedBox(height: sizes.normalPadding),
                           TextField(
                             controller: _password,
+                            obscureText: true,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               isDense: true,
