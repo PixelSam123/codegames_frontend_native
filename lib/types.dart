@@ -69,3 +69,20 @@ class Submission {
     );
   }
 }
+
+class SubmissionRunResult {
+  final String status;
+  final String stdout;
+
+  const SubmissionRunResult({
+    required this.status,
+    required this.stdout,
+  });
+
+  factory SubmissionRunResult.fromJson(Map<String, dynamic> json) {
+    return SubmissionRunResult(
+      status: json['status'],
+      stdout: json['stdout'],
+    );
+  }
+}

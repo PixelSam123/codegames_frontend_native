@@ -169,12 +169,15 @@ class ProblemPage extends StatefulWidget {
 class _ProblemPageState extends State<ProblemPage> {
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  final TextEditingController _fileToSubmitLocation = TextEditingController();
   late Future<ProblemDetailedView> _problem;
+  Future<SubmissionRunResult>? _runResult;
 
   @override
   void dispose() {
     _username.dispose();
     _password.dispose();
+    _fileToSubmitLocation.dispose();
     super.dispose();
   }
 
@@ -203,6 +206,56 @@ class _ProblemPageState extends State<ProblemPage> {
         ),
       ),
     );
+  }
+
+  Future<void> submitCode(context) async {
+    File fileToSubmit = File(_fileToSubmitLocation.text);
+
+    try {
+      String code = await fileToSubmit.readAsString();
+
+      Future<SubmissionRunResult> fetchedRunResult = () async {
+        Map<String, String> headers =
+            _username.text.isNotEmpty && _password.text.isNotEmpty
+                ? {
+                    'Authorization':
+                        'Basic ${base64Encode(utf8.encode('${_username.text}:${_password.text}'))}',
+                  }
+                : {};
+
+        http.Response res = await http.post(
+          Uri.parse('${widget.serverUrl}/problems/v1/submission/${widget.idx}'),
+          headers: headers,
+          body: code,
+        );
+
+        if (![HttpStatus.ok, HttpStatus.created].contains(res.statusCode)) {
+          throw Exception('Network response not OK! ${res.statusCode}');
+        }
+
+        return SubmissionRunResult.fromJson(jsonDecode(res.body));
+      }();
+
+      setState(() {
+        _runResult = fetchedRunResult;
+      });
+    } catch (err) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Error reading file!'),
+          content: Text(err.toString()),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -258,6 +311,15 @@ class _ProblemPageState extends State<ProblemPage> {
                           ),
                           const SizedBox(height: sizes.largePadding),
                           TextField(
+                            controller: _fileToSubmitLocation,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              isDense: true,
+                              labelText: 'File to submit location',
+                            ),
+                          ),
+                          const SizedBox(height: sizes.largePadding),
+                          TextField(
                             controller: _username,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
@@ -280,10 +342,60 @@ class _ProblemPageState extends State<ProblemPage> {
                               MediaQuery.of(context).textScaleFactor,
                             ),
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                submitCode(context);
+                              },
                               child: const Text('Submit'),
                             ),
                           ),
+                          const SizedBox(height: sizes.normalPadding),
+                          _runResult == null
+                              ? const Text(
+                                  'You have not submitted',
+                                  textAlign: TextAlign.center,
+                                )
+                              : FutureBuilder(
+                                  future: _runResult,
+                                  builder: (_, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(
+                                            sizes.normalPadding,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                snapshot.data!.status,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge,
+                                              ),
+                                              const SizedBox(
+                                                height: sizes.normalPadding,
+                                              ),
+                                              Text(
+                                                snapshot.data!.stdout,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .copyWith(
+                                                      fontFamily: 'monospace',
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+
+                                    if (snapshot.hasError) {
+                                      return Text(snapshot.error.toString());
+                                    }
+
+                                    return const CircularProgressIndicator();
+                                  },
+                                ),
                         ],
                       ),
                     ),
