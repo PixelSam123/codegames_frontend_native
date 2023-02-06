@@ -159,9 +159,13 @@ class _SignUpPageState extends State<SignUpPage> {
 
 class ProblemPage extends StatefulWidget {
   final String serverUrl;
-  final int idx;
+  final int problemId;
 
-  const ProblemPage({super.key, required this.serverUrl, required this.idx});
+  const ProblemPage({
+    super.key,
+    required this.serverUrl,
+    required this.problemId,
+  });
 
   @override
   State<ProblemPage> createState() => _ProblemPageState();
@@ -185,8 +189,8 @@ class _ProblemPageState extends State<ProblemPage> {
   @override
   void initState() {
     _problem = () async {
-      http.Response res = await http.get(
-          Uri.parse('${widget.serverUrl}/problems/v1/problem/${widget.idx}'));
+      http.Response res = await http.get(Uri.parse(
+          '${widget.serverUrl}/problems/v1/problem/${widget.problemId}'));
 
       if (res.statusCode != HttpStatus.ok) {
         throw Exception('Network response not OK! ${res.statusCode}');
@@ -203,7 +207,7 @@ class _ProblemPageState extends State<ProblemPage> {
       MaterialPageRoute(
         builder: (_) => SubmissionPage(
           serverUrl: widget.serverUrl,
-          idx: widget.idx,
+          problemId: widget.problemId,
         ),
       ),
     );
@@ -225,7 +229,8 @@ class _ProblemPageState extends State<ProblemPage> {
                 : {};
 
         http.Response res = await http.post(
-          Uri.parse('${widget.serverUrl}/problems/v1/submission/${widget.idx}'),
+          Uri.parse(
+              '${widget.serverUrl}/problems/v1/submission/${widget.problemId}'),
           headers: headers,
           body: code,
         );
@@ -420,9 +425,13 @@ class _ProblemPageState extends State<ProblemPage> {
 
 class SubmissionPage extends StatefulWidget {
   final String serverUrl;
-  final int idx;
+  final int problemId;
 
-  const SubmissionPage({super.key, required this.serverUrl, required this.idx});
+  const SubmissionPage({
+    super.key,
+    required this.serverUrl,
+    required this.problemId,
+  });
 
   @override
   State<SubmissionPage> createState() => _SubmissionPageState();
@@ -435,7 +444,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
   void initState() {
     _submission = () async {
       http.Response res = await http.get(Uri.parse(
-          '${widget.serverUrl}/problems/v1/submission/${widget.idx}'));
+          '${widget.serverUrl}/problems/v1/submission/${widget.problemId}'));
 
       if (res.statusCode != HttpStatus.ok) {
         throw Exception('Network response not OK! ${res.statusCode}');
@@ -566,11 +575,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void goToProblemPage(int idx) {
+  void goToProblemPage(int problemId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ProblemPage(serverUrl: _serverUrl.text, idx: idx),
+        builder: (_) =>
+            ProblemPage(serverUrl: _serverUrl.text, problemId: problemId),
       ),
     );
   }
