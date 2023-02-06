@@ -699,6 +699,7 @@ class _HomePageState extends State<HomePage> {
                             }).toList(),
                           );
                         }
+
                         if (snapshot.hasError) {
                           return Text(snapshot.error.toString());
                         }
